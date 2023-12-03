@@ -15,18 +15,21 @@ import { CreateUserDto, CreateUserDtoSchema, LoginDtoSchema, LoginDto } from '..
 import { UserService } from './user.service';
 import { z } from 'zod';
 
+
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   /**Get Methods */
-  @Get(':usuario')
-  async findOne(@Param('usuario') usuario: string) {
+  @Get(':id')
+  async findOne(@Param('id') id: number) {
     try {
-      const user = await this.userService.getUser(usuario);
+      const user = await this.userService.getUser(id);
       return user;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof z.ZodError) {
+        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
   }
 
@@ -56,17 +59,20 @@ export class UserController {
 
 
   /**Delete Methods */
-  @Delete(':usuario')
-  async deleteUser(@Param('usuario') usuario: string) {
+  @Delete(':id')
+  async deleteUser(@Param('id') id: number) {
     try {
-      const result = await this.userService.deleteUser(usuario);
+      const result = await this.userService.deleteUser(id);
       return result;
     } catch (error) {
-      throw new HttpException('Não foi possível encontrar o usuário', HttpStatus.NOT_FOUND);
+      if (error) {
+        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
   }
 
-  /**Post Methods */
+  /** Post Methods */
+
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     try {
@@ -74,7 +80,9 @@ export class UserController {
       const result = await this.userService.register(validatedData);
       return result;
     } catch (error) {
-      throw new HttpException('Usuário ou Email já existe', HttpStatus.CONFLICT);
+      if (error instanceof z.ZodError) {
+        throw new HttpException('Usuário ou Email já existe', HttpStatus.CONFLICT);
+      }
     }
   }
 
