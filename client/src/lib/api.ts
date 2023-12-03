@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { LocalStorage } from './utils';
-import { CreateUserDto, LoginDto } from '@/interfaces/interfaces';
+import { CreateLoginResponse, CreateUserDto, LoginDto, LoginResponse } from '@/interfaces/interfaces';
+import { ZodError, z } from 'zod';
 
 
 const apiClient = axios.create({
@@ -28,7 +29,7 @@ apiClient.interceptors.request.use(
   }
 );
 
-export const login = async (data: LoginDto) => {
+export const login = async (data: LoginDto): Promise<LoginResponse> => {
   try {
     const response = await apiClient.post('user/login', data, {
       headers: {
@@ -36,12 +37,17 @@ export const login = async (data: LoginDto) => {
       },
     });
 
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('usuario', response.data.usuario);
+    if (response.data) {
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('id', response.data.id);
+    }
+
+    CreateLoginResponse.parse(response.data);
 
     return response.data;
-  } catch (error) {
-    throw new Error('Erro durante o login: ' + error);
+  } catch (error: any) {
+    // You can customize this error handling based on the type of errors expected
+    throw new Error('Erro durante o login: ' + error.message);
   }
 };
 
@@ -56,5 +62,27 @@ export const registro = async (data: CreateUserDto) => {
     return response.data;
   } catch (error) {
     throw new Error('Erro durante o registro: ' + error);
+  }
+};
+
+export const getUser = async (id: number): Promise<any> => {
+  try {
+    const response = await apiClient.get(`user/${id}`);
+    return response.data;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new Error(`Erro ao buscar usuário: ${error.message}`);
+    }
+  }
+};
+
+export const getUsers = async (params?: { skip?: number; take?: number }): Promise<any> => {
+  try {
+    const response = await apiClient.get('user', { params });
+    return response.data;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new Error(`Erro ao buscar usuário: ${error.message}`);
+    }
   }
 };

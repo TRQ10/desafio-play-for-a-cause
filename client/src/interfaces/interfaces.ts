@@ -11,6 +11,14 @@ export const CreateUserDtoSchema = BaseUserDtoSchema.extend({
   perfil: z.string().optional(),
 });
 
+
+export const CreateLoginResponse = z.object({
+  id: z.number(),
+  token: z.string()
+});
+
+export type LoginResponse = z.infer<typeof CreateLoginResponse>
+
 export const LoginDtoSchema = BaseUserDtoSchema;
 
 export type CreateUserDto = z.infer<typeof CreateUserDtoSchema>;

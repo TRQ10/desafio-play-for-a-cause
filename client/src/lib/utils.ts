@@ -1,7 +1,7 @@
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { AxiosResponse } from 'axios';
-
+import type { Session, User } from 'next-auth'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -85,4 +85,14 @@ export default function convertToBase64(file: File): Promise<string> {
       reject(error);
     };
   });
+}
+
+export const isAuthenticated = (): boolean => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    return false
+  }
+  else {
+    return true;
+  }
 }

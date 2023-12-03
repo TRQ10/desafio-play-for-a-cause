@@ -5,7 +5,10 @@ interface pageProps {
 
 }
 
-const page: FC<pageProps> = ({ }) => {
+const page = async ({ }) => {
+
+
+
   return <Button>hello</Button>
 }
 
