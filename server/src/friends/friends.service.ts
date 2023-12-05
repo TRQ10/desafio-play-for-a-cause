@@ -93,6 +93,43 @@ export class FriendsService {
         return uniqueFriends;
     }
 
+    async getFriendsWithStatus(userId: number, status: string): Promise<UserDto[]> {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const friendships = await this.prisma.friendship.findMany({
+            where: {
+                OR: [
+                    { user1Id: userId, status: status },
+                    { user2Id: userId, status: status },
+                ],
+            },
+            include: {
+                user1: true,
+                user2: true,
+            },
+        });
+
+        const uniqueFriends: UserDto[] = [];
+        const friendIds = new Set<number>();
+
+        friendships.forEach((friendship) => {
+            const friend = friendship.user1.id === userId ? friendship.user2 : friendship.user1;
+
+            if (!friendIds.has(friend.id)) {
+                uniqueFriends.push(friend);
+                friendIds.add(friend.id);
+            }
+        });
+
+        return uniqueFriends;
+    }
+
     async acceptFriendship(user1Id: number, user2Id: number): Promise<void> {
         const friendshipKey: FriendshipKey = { user1Id, user2Id };
 
