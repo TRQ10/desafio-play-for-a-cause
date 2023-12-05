@@ -1,39 +1,105 @@
-"use client"
+'use client'
 
-import { FC } from 'react'
-import Button from './ui/Button'
-import { addFriendValidator } from '@/lib/validations/Add-friend'
+import { FC, useEffect, useState } from 'react';
+import Button from './ui/Button';
+import { useSession } from 'next-auth/react';
+import { getUsers } from '@/lib/api';
+import toast from 'react-hot-toast';
+import { url } from '@/app/api/auth/[...nextauth]/route';
 
-interface AddFriendButtonProps {
+interface AddFriendButtonProps { }
 
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    Picture: string;
 }
 
-const AddFriendButton: FC<AddFriendButtonProps> = ({ }) => {
+// ... imports ...
 
-    const addFriend = async (email: string) => {
+const AddFriendButton: FC<AddFriendButtonProps> = () => {
+    const { data: session } = useSession();
+    const [users, setUsers] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await getUsers();
+
+                if (Array.isArray(response.data)) {
+                    setUsers(response.data);
+                } else {
+                    console.error('getUsers() não retornou uma array de usuários:', response);
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                setError('Erro ao buscar usuários. Tente novamente.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    const addFriend = async (userId: number, friendId: number) => {
         try {
-            const validateEmail = addFriendValidator.parse({ email })
+            if (!userId || !friendId) {
+                console.error('IDs de usuário inválidos.');
+                return;
+            }
 
+            const response = await fetch(`${url}/friends/${userId}/${friendId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session?.backendTokens.token}`,
+                },
+            });
 
-
+            if (response.ok) {
+                // Verifica se a resposta tem conteúdo antes de chamar response.json()
+                const data = response.headers.get('Content-Length') === '0' ? null : await response.json();
+                console.log('Amigo adicionado com sucesso:', data);
+                toast.success('Amigo adicionado com sucesso!');
+            } else {
+                console.error('Falha ao adicionar amigo. Status:', response.status);
+                toast.error('Erro ao adicionar amigo. Tente novamente.');
+            }
         } catch (error) {
-
+            console.error('Erro ao adicionar amigo:', error);
+            toast.error('Erro ao adicionar amigo. Tente novamente.');
         }
-    }
+    };
 
-    return <form className='max-w-sm flex flex-row'>
-        <div className="gap-6 relative w-full min-w-[200px]">
-            <input className="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 pr-20 
-                        font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200
-                        placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 
-                        disabled:border-0 disabled:bg-blue-gray-50" type='text'
-            />
-            <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                Add a Friend From The List
-            </label>
+    return (
+        <div className="max-h-[400px] overflow-y-auto">
+            <ul className="space-y-4 flex-shrink-0">
+                {users.map((user) => (
+                    session?.user?.id !== user.id && (
+                        <li
+                            key={user.id}
+                            className="flex items-center justify-between p-4 border rounded transition-transform hover:border-pink-500 hover:bg-gray-50"
+                        >
+                            <img
+                                src="/perfil.png"
+                                alt={`Profile of ${user.name}`}
+                                className="w-10 h-10 rounded-full"
+                            />
+                            <div className="flex flex-col">
+                                <p className="font-semibold text-sm text-blue-gray-700">{user.name}</p>
+                                <p className="text-gray-500 text-sm">{user.email}</p>
+                            </div>
+                            <Button onClick={() => addFriend(session?.user?.id || 0, user.id)}>add</Button>
+                        </li>
+                    )
+                ))}
+            </ul>
         </div>
-        <div className="mt-1 pl-2"><Button>Add</Button></div>
-    </form >
-}
+    );
+};
 
-export default AddFriendButton
+export default AddFriendButton;

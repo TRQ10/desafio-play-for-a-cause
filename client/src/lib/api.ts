@@ -1,10 +1,11 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { LocalStorage } from './utils';
-import { CreateLoginResponse, CreateUserDto, LoginDto, LoginResponse } from '@/interfaces/interfaces';
-import { ZodError, z } from 'zod';
+import { CreateUserDto } from '@/interfaces/interfaces';
+import { z } from 'zod';
+import { url } from '@/app/api/auth/[...nextauth]/route';
 
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_URI,
   withCredentials: true,
   timeout: 120000,
@@ -29,31 +30,9 @@ apiClient.interceptors.request.use(
   }
 );
 
-export const login = async (data: LoginDto): Promise<LoginResponse> => {
-  try {
-    const response = await apiClient.post('user/login', data, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.data) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('id', response.data.id);
-    }
-
-    CreateLoginResponse.parse(response.data);
-
-    return response.data;
-  } catch (error: any) {
-    // You can customize this error handling based on the type of errors expected
-    throw new Error('Erro durante o login: ' + error.message);
-  }
-};
-
 export const registro = async (data: CreateUserDto) => {
   try {
-    const response = await apiClient.post('user/register', data, {
+    const response = await apiClient.post('auth/register', data, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -86,3 +65,37 @@ export const getUsers = async (params?: { skip?: number; take?: number }): Promi
     }
   }
 };
+
+
+export const getFriends = async (userId: number) => {
+  const response = await fetch(`${url}/friends/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      // Adicione headers de autenticação, se necessário
+    },
+  });
+
+  return response.json();
+};
+
+export const fetchPendingFriendRequests = async (userId: number) => {
+  try {
+    const response = await fetch(`${url}/friends/${userId}/friends/pending`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return { success: true, data };
+    } else {
+      console.error('Falha ao obter os pedidos de amizade pendentes:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Erro ao obter os pedidos de amizade pendentes:', error);
+  }
+};
+

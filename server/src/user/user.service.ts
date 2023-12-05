@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // user.service.ts
 import { Injectable, NotFoundException, ConflictException, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto, LoginDto } from '../Dto/create-user.dto';
+import { CreateUserDto } from '../Dto/create-user.dto';
 import * as bcryptjs from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
 import * as otpGenerator from 'otp-generator';
 
 
@@ -41,87 +41,16 @@ export class UserService {
     return bcryptjs.hash(password, saltRounds);
   }
 
-  async register(body: CreateUserDto) {
-    const { usuario, senha, perfil = '', email } = body;
-
-    try {
-      // Verificar se o usuário já existe
-      const existUsuario = await this.prisma.user.findUnique({ where: { usuario } });
-      if (existUsuario) {
-        console.error(`User with usuario "${usuario}" already exists.`);
-        throw new ConflictException('Please choose a unique usuario');
-      }
-
-      // Verificar se o e-mail já existe
-      const existEmail = await this.prisma.user.findUnique({ where: { email } });
-      if (existEmail) {
-        console.error(`User with email "${email}" already exists.`);
-        throw new ConflictException('Please choose a unique email');
-      }
-
-      // Hash da senha
-      const hashedPassword = await this.hashPassword(senha);
-
-      // Criar novo usuário
-      const newUser = await this.prisma.user.create({
-        data: {
-          usuario,
-          senha: hashedPassword,
-          perfil: body.perfil,
-          email,
-        },
-      });
-
-      return { msg: 'User registered successfully' };
-    } catch (error) {
-      console.error('Error during registration:', error);
-      throw error;
-    }
-  }
-
-
-  async login(body: LoginDto) {
-    const { usuario, senha } = body;
-
-    try {
-      const user = await this.prisma.user.findUnique({ where: { usuario } });
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
-      // Compare passwords
-      const passwordCheck = await bcryptjs.compare(senha, user.senha);
-      if (!passwordCheck) {
-        throw new UnauthorizedException('Invalid password');
-      }
-
-      // Create JWT token
-      const token = jwt.sign({ userId: user.id, usuario: user.usuario }, process.env.JWT_SECRET, {
-        expiresIn: '24h',
-      });
-
-      return {
-        msg: 'Login Successful',
-        id: user.id,
-        usuario: user.usuario,
-        token,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
-
   async updateUser(userId: number, body: CreateUserDto) {
     try {
-      const { usuario, senha, perfil, email } = body;
+      const { name, senha, picture, email } = body;
 
       const updatedData = await this.prisma.user.update({
         where: { id: userId },
         data: {
-          usuario: usuario,
+          name: name,
           senha: await this.hashPassword(senha),
-          perfil: perfil || '',
+          picture: picture || '',
           email,
         },
       });
@@ -145,17 +74,15 @@ export class UserService {
     }
   }
 
-  async getUser(userId: number) {
+  async getUser(name: string) {
     try {
 
-      const id = parseInt(userId.toString());
-
-      const user = await this.prisma.user.findUnique({ where: { id } });
-      if (!id) {
+      const user = await this.prisma.user.findUnique({ where: { name: name } });
+      if (!name) {
         throw new NotFoundException('User not found');
       }
       // Omitting the password before sending the user data
-      const { senha, ...userData } = user;
+      const { ...userData } = user;
       return userData;
     } catch (error) {
       throw error;
@@ -179,7 +106,7 @@ export class UserService {
     }
   }
 
-  async verifyOTP(usuario: string, code: string) {
+  async verifyOTP(name: string, code: string) {
     if (parseInt(this.OTP) === parseInt(code)) {
       this.resetSession = true;
       return { msg: 'Verification successful!' };
@@ -194,24 +121,22 @@ export class UserService {
     throw new UnauthorizedException('Session expired');
   }
 
-  async resetPassword(usuario: string, senha: string) {
+  async resetPassword(name: string, senha: string) {
     try {
       if (!this.resetSession) {
         throw new UnauthorizedException('Session expired');
       }
 
-      const user = await this.prisma.user.findUnique({ where: { usuario } });
+      const user = await this.prisma.user.findUnique({ where: { name } });
       if (!user) {
         throw new NotFoundException('User not found');
       }
 
       const hashedPassword = await this.hashPassword(senha);
 
-      console.log('Hashed Password:', hashedPassword);
-      console.log('Usuario:', usuario);
 
       const updateResult = await this.prisma.user.update({
-        where: { usuario: user.usuario },
+        where: { name: user.name },
         data: { senha: hashedPassword },
       });
 

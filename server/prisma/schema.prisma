@@ -11,15 +11,17 @@ datasource db {
 
 model User {
   id                Int       @id @default(autoincrement())
-  usuario           String    @unique
+  name              String    @unique
   senha             String
   email             String    @unique
-  perfil            String?
+  picture           String?
   verified          Boolean   @default(false)
-  verificationToken String?   @default("")
 
   friends           Friendship[] @relation("FriendshipUser1")
   friendsOf         Friendship[] @relation("FriendshipUser2")
+  chatsAsUser1      Chat[]      @relation("ChatUser1")
+  chatsAsUser2      Chat[]      @relation("ChatUser2")
+  sentMessages      Message[]   @relation("MessageSender")
 }
 
 model Friendship {
@@ -30,4 +32,25 @@ model Friendship {
 
   user1     User   @relation("FriendshipUser1", fields: [user1Id], references: [id])
   user2     User   @relation("FriendshipUser2", fields: [user2Id], references: [id])
+}
+
+model Chat {
+  id          Int      @id @default(autoincrement())
+  user1Id     Int
+  user2Id     Int
+  messages    Message[]
+
+  user1       User     @relation("ChatUser1", fields: [user1Id], references: [id])
+  user2       User     @relation("ChatUser2", fields: [user2Id], references: [id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  chatId    Int
+  senderId  Int
+  content   String
+  createdAt DateTime @default(now())
+
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  sender    User     @relation("MessageSender", fields: [senderId], references: [id])
 }

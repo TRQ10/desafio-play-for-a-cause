@@ -8,10 +8,12 @@ import { AuthService } from './auth/auth.service';
 import { MessagesModule } from './messages/messages.module';
 import { FriendsController } from './friends/friends.controller';
 import { FriendsService } from './friends/friends.service';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, MessagesModule],
+  imports: [ConfigModule.forRoot(), UserModule, MessagesModule, AuthModule],
   controllers: [AppController, FriendsController],
   providers: [AppService, PrismaService, UserService, AuthService, FriendsService],
 })
-export class AppModule {}
+export class AppModule { }

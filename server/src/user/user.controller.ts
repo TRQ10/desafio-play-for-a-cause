@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Body,
   Controller,
@@ -10,21 +11,23 @@ import {
   Put,
   Query,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto, CreateUserDtoSchema, LoginDtoSchema, LoginDto } from '../Dto/create-user.dto'
+import { CreateUserDto, CreateUserDtoSchema } from '../Dto/create-user.dto'
 import { UserService } from './user.service';
 import { z } from 'zod';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  /**Get Methods */
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
+  /** Get Methods */
+  @Get(':name')
+  async findOne(@Param('name') name: string) {
     try {
-      const user = await this.userService.getUser(id);
+      const user = await this.userService.getUser(name);
       return user;
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -43,6 +46,8 @@ export class UserController {
     }
   }
 
+  /** Put Methods */
+  @UseGuards(JwtGuard)
   @Put('update/:id')
   async updateUser(@Param('id') id: string, @Body() updateUserDto: CreateUserDto) {
     try {
@@ -57,8 +62,8 @@ export class UserController {
     }
   }
 
-
-  /**Delete Methods */
+  /** Delete Methods */
+  @UseGuards(JwtGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: number) {
     try {
@@ -72,35 +77,7 @@ export class UserController {
   }
 
   /** Post Methods */
-
-  @Post('register')
-  async register(@Body() createUserDto: CreateUserDto) {
-    try {
-      const validatedData = CreateUserDtoSchema.parse(createUserDto);
-      const result = await this.userService.register(validatedData);
-      return result;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new HttpException('Usuário ou Email já existe', HttpStatus.CONFLICT);
-      }
-    }
-  }
-
-
-  @Post('login')
-  async login(@Body() loginDto: LoginDto) {
-    try {
-      const validatedData = LoginDtoSchema.parse(loginDto);
-      const result = await this.userService.login(validatedData);
-      return result;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new HttpException(error.errors, HttpStatus.BAD_REQUEST);
-      }
-      throw new HttpException('Login failed', HttpStatus.UNAUTHORIZED);
-    }
-  }
-
+  @UseGuards(JwtGuard)
   @Post('generate-otp')
   async generateOTP() {
     try {
@@ -111,8 +88,9 @@ export class UserController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Post('verify-otp')
-  async verifyOTP(@Body() body: { usuario: string, code: string }) {
+  async verifyOTP(@Body() body: { name: string, code: string }) {
     try {
       const storedOTP = this.userService.getOTP();
 
@@ -128,6 +106,7 @@ export class UserController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Post('create-reset-session')
   async createResetSession() {
     try {
@@ -138,10 +117,11 @@ export class UserController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Post('reset-password')
-  async resetPassword(@Body() body: { usuario: string; senha: string }) {
+  async resetPassword(@Body() body: { name: string; senha: string }) {
     try {
-      const result = await this.userService.resetPassword(body.usuario, body.senha);
+      const result = await this.userService.resetPassword(body.name, body.senha);
       console.log(result)
       return result;
     } catch (error) {

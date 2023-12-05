@@ -1,15 +1,18 @@
-import { FC } from 'react'
-import Button from '@/components/ui/Button'
+"use client"
 
+
+import { useSession } from 'next-auth/react'
 interface pageProps {
 
 }
 
-const page = async ({ }) => {
+const page = ({ }) => {
 
+  const { data: session, status } = useSession()
 
+  console.log(session)
 
-  return <Button>hello</Button>
+  return <><pre>{session?.backendTokens.expiresIn}</pre></>
 }
 
 export default page

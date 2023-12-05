@@ -2,13 +2,16 @@ import { z } from 'zod';
 
 
 export const BaseUserDtoSchema = z.object({
-  usuario: z.string(),
-  senha: z.string().min(8).max(20)
+  name: z.string().min(1, 'Requer name').max(100),
+  senha: z.string().min(1, 'Requer senha').min(8, 'A senha precisa ter mais de 8 caracteres')
 });
 
+
 export const CreateUserDtoSchema = BaseUserDtoSchema.extend({
-  email: z.string().email(),
-  perfil: z.string().optional(),
+  email: z.string().min(1, "Requer Email").email('Email inválido'),
+  picture: z.string().optional(),
+  token: z.string().optional(),
+  refreshToken: z.string().optional(),
 });
 
 
