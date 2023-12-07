@@ -10,6 +10,7 @@ export const CreateUserDtoSchema = BaseUserDtoSchema.extend({
   picture: z.string().optional(),
   token: z.string().optional(),
   refreshToken: z.string().optional(),
+  status: z.string().optional()
 });
 
 export const LoginDtoSchema = z.object({

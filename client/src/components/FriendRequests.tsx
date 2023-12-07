@@ -4,21 +4,32 @@ import { url } from '@/app/api/auth/[...nextauth]/route'
 import { Check, UserPlus, X } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import useWebSocket from './UseWebSocket'
 
 interface FriendRequestsProps {
-    incomingFriendRequests: IncomingFriendRequest[],
     sessionId: number
 }
 
-const FriendRequests: FC<FriendRequestsProps> = ({
-    incomingFriendRequests,
-    sessionId,
-}) => {
+const FriendRequests: FC<FriendRequestsProps> = ({ sessionId }) => {
+    const { onEvent } = useWebSocket();
+    const [friendRequests, setFriendRequests] = useState<IncomingFriendRequest[]>([]);
 
-    const [friendRequests, setFriendRequests] = useState<IncomingFriendRequest[]>(
-        incomingFriendRequests
-    )
+    useEffect(() => {
+        // Configurar o ouvinte para o evento 'UpdatedPendingRequests'
+        const updateFriendRequests = (payload: any) => {
+            if (payload.userId === sessionId) {
+                setFriendRequests(payload.pendingFriends || []);
+            }
+        };
+
+        onEvent('UpdatedPendingRequests', updateFriendRequests);
+
+        return () => {
+            // Limpar o ouvinte quando o componente é desmontado
+            onEvent('UpdatedPendingRequests', () => { });
+        };
+    }, [onEvent, sessionId]);
     const router = useRouter()
     const { data: session } = useSession();
 

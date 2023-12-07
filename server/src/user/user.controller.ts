@@ -36,6 +36,19 @@ export class UserController {
     }
   }
 
+  @Get('get/:id')
+  async findOneById(@Param('id') id: string) {
+    try {
+      const user = await this.userService.getUserById(parseInt(id, 10));
+      return user;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @Get()
   async getUsers(@Query() params: { skip?: number; take?: number }) {
     try {

@@ -10,16 +10,13 @@ const page = async () => {
 
     if (!session) notFound();
 
-    const result = await fetchPendingFriendRequests(session?.user.id);
-
-    const friendRequest: IncomingFriendRequest[] = result?.data;
 
 
     return (
         <main className='pt-8'>
             <h1 className='font-bold text-5xl mb-8'>Add a friend</h1>
             <div className="flex flex-col gap-4">
-                <FriendRequests incomingFriendRequests={friendRequest} sessionId={session.user.id} />
+                <FriendRequests sessionId={session.user.id} />
             </div>
         </main>
     );

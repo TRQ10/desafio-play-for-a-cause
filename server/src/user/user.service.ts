@@ -89,6 +89,23 @@ export class UserService {
     }
   }
 
+  async getUserById(id: number) {
+    try {
+      const user = await this.prisma.user.findUnique({ where: { id: id } });
+
+      // Correção: Verificar se o usuário não existe
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Omitindo a senha antes de enviar os dados do usuário
+      const { senha, ...userData } = user;
+      return userData;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteUser(userId: number) {
     try {
 

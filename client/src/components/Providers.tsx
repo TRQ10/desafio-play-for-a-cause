@@ -10,10 +10,12 @@ interface Props {
 
 
 const Providers = ({ children }: Props) => {
-    return (<SessionProvider>
-        <Toaster position="top-center" reverseOrder={false} />
-        {children}
-    </SessionProvider>
+    return (
+        <SessionProvider>
+            <Toaster position="top-center" reverseOrder={false} />
+            {children}
+        </SessionProvider>
+
     )
 };
 
