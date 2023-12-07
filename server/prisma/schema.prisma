@@ -28,7 +28,7 @@ model Friendship {
   id        Int    @id @default(autoincrement())
   user1Id   Int
   user2Id   Int
-  status    String @default("pending") // Pode ser "pending", "accepted" ou "rejected"
+  status    String @default("pending") // Pode ser "pending", "accepted"
 
   user1     User   @relation("FriendshipUser1", fields: [user1Id], references: [id])
   user2     User   @relation("FriendshipUser2", fields: [user2Id], references: [id])
@@ -50,7 +50,9 @@ model Message {
   senderId  Int
   content   String
   createdAt DateTime @default(now())
-
+  updatedAt DateTime @updatedAt
+  isSeen    Boolean  @default(false)
+  order     Int      @default(autoincrement()) 
   chat      Chat     @relation(fields: [chatId], references: [id])
   sender    User     @relation("MessageSender", fields: [senderId], references: [id])
 }

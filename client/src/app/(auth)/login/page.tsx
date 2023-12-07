@@ -5,6 +5,7 @@ import { LoginDto } from '@/interfaces/interfaces'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
+import Image from 'next/image';
 import { useForm, SubmitHandler } from "react-hook-form"
 import { toast } from 'react-hot-toast'
 
@@ -48,7 +49,13 @@ const Page: FC<pageProps> = () => {
         <div className="flex min-h-full items-cente justify-center py-12 px-4 sm:px-6 lg-px-8">
             <div className="w-full flex flex-col items-cente max-w-md space-y-8">
                 <div className="flex flex-col items-center gap-8">
-                    logo
+                    <Image
+                        src={'/logo.png'}
+                        alt={'Logo'}
+                        width={36}
+                        height={36}
+                        className='h-8 w-auto'
+                    />
                     <h2 className="mt-6 text-cente text-3xl font-bold tracking-tight text-black">
                         Faça o Login para a sua conta
                     </h2>

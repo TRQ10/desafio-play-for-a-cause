@@ -2,21 +2,38 @@
 
 import { User } from 'lucide-react'
 import Link from 'next/link'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import useWebSocket from './UseWebSocket'
 
 interface FriendRequestsSidebarOptionsProps {
     sessionId: number
-    initialUnseenRequestCount: number
 }
 
-const FriendRequestsSidebarOptions: FC<FriendRequestsSidebarOptionsProps> = ({
-    sessionId,
-    initialUnseenRequestCount
-}) => {
+const FriendRequestsSidebarOptions: FC<FriendRequestsSidebarOptionsProps> = ({ sessionId }) => {
+    const [unseenRequestCount, setUnseenRequestCount] = useState<[]>([]);
+    const { onEvent } = useWebSocket();
 
-    const [unseenRequestCount, setUnseenRequestCount] = useState<number>(
-        initialUnseenRequestCount
-    )
+    useEffect(() => {
+        const updateUnseenRequestCount = (payload: any) => {
+            console.log('Received UpdatedPendingRequests event:', payload);
+
+            if (payload.userId === sessionId && payload.pendingFriends) {
+                setUnseenRequestCount(payload.pendingFriends.length);
+                console.log('Updated unseenRequestCount:', payload.pendingFriends.length);
+            }
+        };
+
+        onEvent('UpdatedPendingRequests', updateUnseenRequestCount);
+
+        return () => {
+            onEvent('UpdatedPendingRequests', updateUnseenRequestCount);
+        };
+    }, [onEvent, sessionId]);
+
+    console.log('unseenRequestCount:', unseenRequestCount);
+    console.log(sessionId);
+
+
 
     return <Link
         href='/dashboard/requests'
@@ -27,7 +44,7 @@ const FriendRequestsSidebarOptions: FC<FriendRequestsSidebarOptionsProps> = ({
         </div>
         <p className="truncate">Pedidos de Amizade</p>
 
-        {unseenRequestCount > 0 ? (
+        {unseenRequestCount.length > 0 ? (
             <div className="rounded-full w-5 h-5 text-xs flex justify-center items-center text-white bg-pink-500">
                 {unseenRequestCount}
             </div>

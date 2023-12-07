@@ -16,7 +16,6 @@ interface User {
     Picture: string;
 }
 
-// ... imports ...
 
 const AddFriendButton: FC<AddFriendButtonProps> = () => {
     const { data: session } = useSession();
@@ -59,6 +58,7 @@ const AddFriendButton: FC<AddFriendButtonProps> = () => {
                     'Authorization': `Bearer ${session?.backendTokens.token}`,
                 },
             });
+            console.log("MINHA REPOSNSE", response)
 
             if (response.ok) {
                 // Verifica se a resposta tem conteúdo antes de chamar response.json()
@@ -93,7 +93,7 @@ const AddFriendButton: FC<AddFriendButtonProps> = () => {
                                 <p className="font-semibold text-sm text-blue-gray-700">{user.name}</p>
                                 <p className="text-gray-500 text-sm">{user.email}</p>
                             </div>
-                            <Button onClick={() => addFriend(session?.user?.id || 0, user.id)}>add</Button>
+                            <Button onClick={() => addFriend(session?.user.id || 0, user.id)}>add</Button>
                         </li>
                     )
                 ))}

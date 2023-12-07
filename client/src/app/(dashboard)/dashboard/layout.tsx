@@ -8,7 +8,8 @@ import { authOptions, url } from '@/app/api/auth/[...nextauth]/route';
 import SignOutButton from '@/components/SignOutButton';
 import { redirect } from 'next/navigation';
 import FriendRequestsSidebarOptions from '@/components/FriendRequestsSidebarOptions';
-import { fetchPendingFriendRequests } from '@/lib/api';
+import { CreateUserDto } from '@/interfaces/interfaces';
+import SidebarChatList from '@/components/SidebarChatList';
 
 interface LayoutProps {
     children: ReactNode
@@ -30,6 +31,32 @@ const sidebarOptions: SidebarOption[] = [
     }
 ]
 
+async function getUserFriends(userId: number): Promise<CreateUserDto[]> {
+    try {
+        if (!userId) {
+            throw new Error('Esse usuário não possui chats');
+        }
+
+        const friend = await fetch(`${url}/friends/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!friend.ok) {
+            throw new Error(`Falha ao recuperar mensagens. Status: ${friend.status}`);
+        }
+
+        const data = friend.headers.get('Content-Length') === '0' ? null : await friend.json();
+        return data;
+
+    } catch (error) {
+        console.error('Erro ao tentar pegar mensagens', error);
+        return [];
+    }
+}
+
 
 
 const Layout = async ({ children }: LayoutProps) => {
@@ -40,14 +67,27 @@ const Layout = async ({ children }: LayoutProps) => {
         redirect('/api/auth/signin')
     }
 
-    const result = await fetchPendingFriendRequests(session?.user.id);
+    console.log(session)
 
-    let unseenRequestCount = result?.data.length
+    let Friends: CreateUserDto[] | null = []
+
+    try {
+        const userFriends = await getUserFriends(session?.user.id)
+
+        if (userFriends) {
+            Friends = userFriends
+        } else {
+            throw new Error("Não foi possível recuperar os chats deste usuário")
+        }
+    } catch (error) {
+        console.error('Erro ao tentar recuperar os chats', error);
+    }
+
 
     return (
         <Providers>
             <div className="w-full flex h-screen">
-                <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
+                <div className="hidden md:flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
                     <Link href='/dashboard' className='flex h-16 shrink-0 items-center'>
                         <Image
                             src={'/logo.png'}
@@ -65,7 +105,7 @@ const Layout = async ({ children }: LayoutProps) => {
                     <nav className='flex flex-1 flex-col'>
                         <ul role='list' className='flex flex-1 flex-col gap-y-7'>
                             <li>
-                                // Conversas que esse usuario tem
+                                <SidebarChatList sessionId={session?.user?.id} Friends={Friends} />
                             </li>
                             <li>
                                 <div className="text-xs font-semibold leading-6 text-gray-400">
@@ -88,13 +128,11 @@ const Layout = async ({ children }: LayoutProps) => {
                                             </li>
                                         )
                                     })}
+                                    <li>
+                                        <FriendRequestsSidebarOptions sessionId={session?.user?.id} />
+                                    </li>
                                 </ul>
                             </li>
-
-                            <li>
-                                <FriendRequestsSidebarOptions sessionId={session.user.id} initialUnseenRequestCount={unseenRequestCount} />
-                            </li>
-
                             <li className='-mx-6 mt-auto flex items-center'>
                                 <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900">
                                     <div className="relative h-8 w-8 bg-gray-50">
@@ -102,16 +140,16 @@ const Layout = async ({ children }: LayoutProps) => {
                                             fill
                                             referrerPolicy='no-referrer'
                                             className='rounded-full'
-                                            src={session.user.picture || '/perfil.png'}
+                                            src={session?.user?.picture || '/perfil.png'}
                                             alt="Sua foto de perfil"
                                         />
                                     </div>
 
                                     <span className='sr-only'>Seu Perfil</span>
                                     <div className="flex flex-col">
-                                        <span aria-hidden='true'>{session.user.name}</span>
+                                        <span aria-hidden='true'>{session?.user?.name}</span>
                                         <span className='text-xs text-zinc-400' aria-hidden="true">
-                                            {session.user.email}
+                                            {session?.user?.email}
                                         </span>
                                     </div>
                                 </div>
@@ -120,7 +158,9 @@ const Layout = async ({ children }: LayoutProps) => {
                         </ul>
                     </nav>
                 </div>
-                {children}
+                <aside className='max-h-screen container py-16 md:py-12 w-full'>
+                    {children}
+                </aside>
             </div>
         </Providers>
     )
