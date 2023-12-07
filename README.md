@@ -1,93 +1,93 @@
-# Desáfio Play for a cause
+# Desafio Play For a Cause ChatAPP
 
+---
 
+## Visão Geral:
 
-## Getting started
+Este aplicativo de chat em tempo real representa um projeto desafiador e enriquecedor, desenvolvido por mim com a integração de tecnologias como NestJS, Next.js, Socket.IO, Prisma ORM e PostgreSQL. Ao longo dessa jornada, enfrentei vários desafios, solidificando meu entendimento dessas tecnologias e aprimorando minhas habilidades.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+---
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Como Iniciar o Projeto:
 
-## Add your files
+### Frontend (Next.js)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+1. Navegue até a pasta `client`:
+    ```bash
+    cd client
+    ```
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/trq10/desafio-play-for-a-cause.git
-git branch -M main
-git push -uf origin main
-```
+2. Instale as dependências:
+    ```bash
+    npm install
+    ```
 
-## Integrate with your tools
+3. Inicie o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
 
-- [ ] [Set up project integrations](https://gitlab.com/trq10/desafio-play-for-a-cause/-/settings/integrations)
+4. Acesse o aplicativo em [http://localhost:3000](http://localhost:3000).
 
-## Collaborate with your team
+### Backend (NestJS)
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+1. Navegue até a pasta `server`:
+    ```bash
+    cd server
+    ```
 
-## Test and Deploy
+2. Instale as dependências:
+    ```bash
+    npm install
+    ```
 
-Use the built-in continuous integration in GitLab.
+3. Inicie o servidor:
+    ```bash
+    npm run start
+    ```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+4. O servidor estará em execução em [http://localhost:3001](http://localhost:3001).
 
-***
+---
 
-# Editing this README
+## Principais Recursos:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- **Comunicação em Tempo Real:** Utilizei o Socket.IO para possibilitar mensagens em tempo real entre os usuários, proporcionando conversas dinâmicas e interativas.
 
-## Suggestions for a good README
+- **Integração com Banco de Dados:** O Prisma ORM, aliado ao PostgreSQL, atua como uma base de dados robusta, garantindo armazenamento eficiente, recuperação e gerenciamento de dados, incluindo informações de usuário e mensagens.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- **Design Responsivo:** Embora o projeto alcance sua funcionalidade principal, reconheço a necessidade de melhorias adicionais, especialmente na otimização do desempenho do WebSocket para uma maior responsividade e interatividade.
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Experiência de Aprendizado:
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Embarcar nessa jornada foi uma experiência de aprendizado profunda. A integração complexa de várias tecnologias, a gestão da comunicação em tempo real e a estruturação de um banco de dados escalável contribuíram significativamente para o meu crescimento como desenvolvedor.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Desafios Enfrentados:
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Este projeto apresentou desafios significativos, desde a busca por uma funcionalidade fluida do WebSocket até a implementação de melhorias na UI. Enfrentar esses obstáculos foi uma experiência desafiadora, mas, com persistência, consegui superar cada dificuldade.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+---
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Melhorias Futuras:
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Reconheço a necessidade de melhorias contínuas e tenho planos para futuras implementações, incluindo aprimoramento das rotas WebSocket, introdução do Redis como cache para diminuir a carga de consultas no banco de dados e melhorias na UI.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+---
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Agradecimentos:
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Expresso minha gratidão pela oportunidade de trabalhar neste projeto, aplicando conhecimentos teóricos em cenários do mundo real. A jornada foi desafiadora e enriquecedora, e espero ansiosamente por refinamentos e contribuições contínuas.
 
-## License
-For open source projects, say how it is licensed.
+---
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Contribuições São Bem-Vindas:
+
+Este projeto está aberto a contribuições e sugestões. Qualquer assistência ou insights para aprimorar a funcionalidade, responsividade ou recursos são calorosamente bem-vindos. Juntos, podemos continuar a desenvolver um aplicativo de chat em tempo real robusto e amigável.
+
+---
+
+*Expresso minha apreciação pela oportunidade de realizar este projeto, especialmente considerando a complexidade de acumular tantas tecnologias diferentes em um único projeto.*
