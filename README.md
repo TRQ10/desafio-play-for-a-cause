@@ -17,17 +17,26 @@ Este aplicativo de chat em tempo real representa um projeto desafiador e enrique
     cd client
     ```
 
-2. Instale as dependências:
+2. **Configuração de Variáveis de Ambiente:**
+    - Crie um arquivo chamado `.env.local` na raiz da pasta `client`.
+    - Adicione as seguintes variáveis de ambiente:
+        ```plaintext
+        NEXT_PUBLIC_SERVER_URI=http://localhost:3001
+        NEXTAUTH_SECRET=sua_chave_secreta_para_NextAuth
+        ```
+    - Estas variáveis são cruciais para a integração adequada com o servidor Next.js e para a segurança do NextAuth.
+
+3. Instale as dependências:
     ```bash
     npm install
     ```
 
-3. Inicie o servidor de desenvolvimento:
+4. Inicie o servidor de desenvolvimento:
     ```bash
     npm run dev
     ```
 
-4. Acesse o aplicativo em [http://localhost:3000](http://localhost:3000).
+5. Acesse o aplicativo em [http://localhost:3000](http://localhost:3000).
 
 ### Backend (NestJS)
 
@@ -36,17 +45,28 @@ Este aplicativo de chat em tempo real representa um projeto desafiador e enrique
     cd server
     ```
 
-2. Instale as dependências:
+2. **Configuração de Variáveis de Ambiente:**
+    - Crie um arquivo chamado `.env` na raiz da pasta `server`.
+    - Adicione as seguintes variáveis de ambiente:
+        ```plaintext
+        CORS_ORIGIN=http://localhost:3000
+        JWT_REFRESH_SECRET=sua_chave_secreta_para_refresh_token
+        JWT_SECRET=sua_chave_secreta_para_token_jwt
+        DATABASE_URL=sua_url_do_banco_de_dados_postgresql
+        ```
+    - Essas variáveis são essenciais para a segurança, autenticação JWT e configuração do banco de dados.
+
+3. Instale as dependências:
     ```bash
     npm install
     ```
 
-3. Inicie o servidor:
+4. Inicie o servidor:
     ```bash
     npm run start
     ```
 
-4. O servidor estará em execução em [http://localhost:3001](http://localhost:3001).
+5. O servidor estará em execução em [http://localhost:3001](http://localhost:3001).
 
 ---
 
