@@ -3,10 +3,11 @@
 
 ![Logo do Projeto](https://raw.githubusercontent.com/TRQ10/rdm.images/main/Header.jpg?token=GHSAT0AAAAAACLKQRBSI6JYERVQK5UPPPKMZLTPJVQ)
 
-Link para o site: https://play-for-a-cause-gmjz6uzyo-trq10.vercel.app/
-aviso: site não está completo, ainda falta implementação de alguma features.
 
 ---
+
+Link para o site: https://play-for-a-cause-gmjz6uzyo-trq10.vercel.app/
+aviso: site não está completo, ainda falta implementação de alguma features.
 
 ---
 
