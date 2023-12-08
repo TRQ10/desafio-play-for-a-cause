@@ -1,7 +1,7 @@
 # Desafio Play For a Cause ChatAPP
 
 
-![Logo do Projeto](https://github.com/TRQ10/rdm.images/blob/main/Header.jpg)
+![Logo do Projeto](https://raw.githubusercontent.com/TRQ10/rdm.images/main/Header.jpg?token=GHSAT0AAAAAACLKQRBSI6JYERVQK5UPPPKMZLTPJVQ)
 
 ---
 
