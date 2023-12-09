@@ -1,7 +1,7 @@
 # Desafio Play For a Cause ChatAPP
 
 
-![Logo do Projeto](https://raw.githubusercontent.com/TRQ10/rdm.images/main/Header.jpg?token=GHSAT0AAAAAACLKQRBTVDTKMGJKEXKJRGUKZLTRGVA)
+![Logo do Projeto](https://github.com/TRQ10/rdm.images/blob/18c752ef7dac99412775def38b29f0dd286fd6ef/Header.jpg)
 ---
 
 Link para o site: https://play-for-a-cause-gmjz6uzyo-trq10.vercel.app/
