@@ -5,7 +5,8 @@
 ---
 
 Link para o site: https://play-for-a-cause-gmjz6uzyo-trq10.vercel.app/
-aviso: site não está completo, ainda falta implementação de alguma features.
+
+aviso: site não está completo, ainda falta implementação de alguma features, como o servidor do Backend está numa Infraestrutura gratuita, é necessário aguardar um pouco ate que o ele saia do estado de sleep após o primeiro request. .
 
 ---
 
