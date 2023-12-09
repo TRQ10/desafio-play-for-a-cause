@@ -4,7 +4,7 @@
 ![Logo do Projeto](https://gitlab.com/trq10/desafio-play-for-a-cause/-/raw/main/Header.jpg)
 ---
 
-Link para o site: https://play-for-a-cause-gmjz6uzyo-trq10.vercel.app/
+Link para o site: https://play-for-a-cause-a7rld6uci-trq10.vercel.app
 
 aviso: site não está completo, ainda falta implementação de alguma features, como o servidor do Backend está numa Infraestrutura gratuita, é necessário aguardar um pouco ate que o ele saia do estado de sleep após o primeiro request. .
 
