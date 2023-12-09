@@ -6,7 +6,7 @@
 
 Link para o site: https://play-for-a-cause-gxbv467rw-trq10.vercel.app
 
-aviso: site não está completo, ainda falta implementação de alguma features, como o servidor do Backend está numa Infraestrutura gratuita, é necessário aguardar um pouco ate que o ele saia do estado de sleep após o primeiro request. .
+aviso: site não está completo, ainda falta implementação de alguma features. Como o servidor do Backend está numa Infraestrutura gratuita, é necessário aguardar um pouco ate que o ele saia do estado de sleep após o primeiro request, e também gostaria de avisar que no estado em que se encontra, apos o deployment do frontend no vercel algumas funcionalidades não estão mais funcionando.
 
 ---
 
